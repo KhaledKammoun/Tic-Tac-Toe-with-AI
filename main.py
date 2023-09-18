@@ -3,14 +3,14 @@ def initializeBoard() :
     return [' ' for _ in range(9)]
 def printBoard() :
     print("    {} | {} | {}   |   1 | 2 | 3".format(board[0],board[1],board[2]))
-    print("   -----------  |  -----------")
+    print("   ---⬤---⬤---  |  ---⬤---⬤---")
     print("    {} | {} | {}   |   4 | 5 | 6".format(board[3],board[4],board[5]))
-    print("   -----------  |  -----------")
+    print("   ---⬤---⬤---  |  ---⬤---⬤---")
     print("    {} | {} | {}   |   7 | 8 | 9  ".format(board[6],board[7],board[8]))
 def boardIsFull() :
     return board.count(' ')==0
 def caseIsempty(pos) :
-    return board[pos-1] == ' '
+    return board[pos] == ' '
 def PlayerMove() :
     test = True 
     while test :
@@ -18,7 +18,7 @@ def PlayerMove() :
         try :
             pos = int(pos)
             if 0 < pos <= 9 :
-                if caseIsempty(pos) :
+                if caseIsempty(pos-1) :
                     board[pos-1] = 'X'
                     test = False
                 else :
