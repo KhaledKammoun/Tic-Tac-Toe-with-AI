@@ -1,17 +1,26 @@
+"""
+In this version 1.0.1, we work on how to improve our computer player's movement, by making him
+attack and deffence at the same time, for example if the player make two in row our computer player
+need to defence by make an O on the third case, and from this movement our player can now make some defences
+by making .
+"""
 import random
 def initializeBoard() :
     return [' ' for _ in range(9)]
 def printBoard() :
+    global board
     print("    {} | {} | {}   |   1 | 2 | 3".format(board[0],board[1],board[2]))
     print("   ---⬤---⬤---  |  ---⬤---⬤---")
     print("    {} | {} | {}   |   4 | 5 | 6".format(board[3],board[4],board[5]))
     print("   ---⬤---⬤---  |  ---⬤---⬤---")
     print("    {} | {} | {}   |   7 | 8 | 9  ".format(board[6],board[7],board[8]))
 def boardIsFull() :
+    global board
     return board.count(' ')==0
 def caseIsempty(pos) :
     return board[pos] == ' '
-def PlayerMove() :
+def PlayerMove() : 
+    global board
     test = True 
     while test :
         pos = input("\nEnter a number (1-9) : ")
@@ -27,11 +36,43 @@ def PlayerMove() :
                 print("\nError, Give a number within the range!\n")
         except :
             print("\nError, you shoud write a number!\n")
-def compMove() :
-    notFullCases = [index for index in range(9) if caseIsempty(index)]
-    pos = random.choice(notFullCases)
-    board[pos] = 'O'
-    print("\nThe player O fill the {}th case\n".format(pos+1))
+def compMove():
+    global board
+    boardCopy = board.copy()
+    # See if there is an incomplete line, exp : a line have two O or have a two X .
+    boardNotChanged = True
+    for i in range(3):
+        lineH = [i * 3, i * 3 + 1, i * 3 + 2]
+        lineV = [i, i + 3, i + 6]
+        if boardNotChanged and [board[c] for c in lineH].count(' ') == 1:
+            for j in range(3):
+                if board[lineH[j]] == ' ' and [board[c] for c in lineH if c != lineH[j]].count('O') in [0, 2]:
+                    board[lineH[j]] = 'O'
+                    boardNotChanged = False
+        elif boardNotChanged and [board[c] for c in lineV].count(' ') == 1:
+            for j in range(3):
+                if board[lineV[j]] == ' ' and [board[c] for c in lineV if c != lineV[j]].count('O') in [0, 2]:
+                    board[lineV[j]] = 'O'
+                    boardNotChanged = False
+    listeHV = [[0, 4, 8], [2, 4, 6]]
+    for i in range(2):
+        if boardNotChanged and [board[c] for c in listeHV[i]].count(' ') == 1:
+            for j in range(3):
+                if board[listeHV[i][j]] == ' ' and [board[c] for c in listeHV[i] if c != listeHV[i][j]].count('O') in [0, 2]:
+                    board[listeHV[i][j]] = 'O'
+                    boardNotChanged = False
+            break
+    for i in range(9):
+        if boardCopy[i] == ' ' and board[i] != boardCopy[i]:
+            pos = i
+            print("\nThe player O fill the {}th case\n".format(pos + 1))
+            break
+    if boardNotChanged:
+        notFullCases = [index for index in range(9) if caseIsempty(index)]
+        pos = random.choice(notFullCases)
+        board[pos] = 'O'
+        print("\nThe player O fill the {}th case\n".format(pos + 1))
+
 
 def winner() :
     for i in range(3) :
