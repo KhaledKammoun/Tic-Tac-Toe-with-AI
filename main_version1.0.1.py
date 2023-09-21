@@ -41,26 +41,55 @@ def compMove():
     boardCopy = board.copy()
     # See if there is an incomplete line, exp : a line have two O or have a two X .
     boardNotChanged = True
+    X_winningCase = -1
+    pre_winningCases = []
     for i in range(3):
         lineH = [i * 3, i * 3 + 1, i * 3 + 2]
         lineV = [i, i + 3, i + 6]
-        if boardNotChanged and [board[c] for c in lineH].count(' ') == 1:
-            for j in range(3):
-                if board[lineH[j]] == ' ' and [board[c] for c in lineH if c != lineH[j]].count('O') in [0, 2]:
-                    board[lineH[j]] = 'O'
-                    boardNotChanged = False
-        elif boardNotChanged and [board[c] for c in lineV].count(' ') == 1:
-            for j in range(3):
-                if board[lineV[j]] == ' ' and [board[c] for c in lineV if c != lineV[j]].count('O') in [0, 2]:
-                    board[lineV[j]] = 'O'
-                    boardNotChanged = False
+        if boardNotChanged :
+            array = [board[c] for c in lineH]
+            if array.count(' ') == 1 :
+                for j in range(3):
+                    if board[lineH[j]] == ' ' :
+                        if array.count('O') == 2 :
+                            board[lineH[j]] = 'O'
+                            boardNotChanged = False
+                        elif array.count('O') == 0 :
+                            X_winningCase = lineH[j]
+            elif array.count('O') == 1 and array.count(' ') == 2 :
+                for c in lineH:
+                    if board[c] == ' ':
+                        pre_winningCases.append(c)
+        elif boardNotChanged :
+            array = [board[c] for c in lineV]
+            if array.count(' ') == 1 :
+                for j in range(3):
+                    if board[lineV[j]] == ' ' :
+                        if array.count('O') == 2 :
+                            board[lineV[j]] = 'O'
+                            boardNotChanged = False
+                        elif array.count('O') == 0 :
+                            X_winningCase = lineV[j]
+            elif array.count('O') == 1 and array.count(' ') == 2 :
+                for c in lineV :
+                    if board[c] == ' ':
+                        pre_winningCases.append(c)
     listeHV = [[0, 4, 8], [2, 4, 6]]
     for i in range(2):
-        if boardNotChanged and [board[c] for c in listeHV[i]].count(' ') == 1:
-            for j in range(3):
-                if board[listeHV[i][j]] == ' ' and [board[c] for c in listeHV[i] if c != listeHV[i][j]].count('O') in [0, 2]:
-                    board[listeHV[i][j]] = 'O'
-                    boardNotChanged = False
+        if boardNotChanged :
+            array = [board[c] for c in listeHV[i]]
+            if array.count(' ') == 1 :
+                for j in range(3):
+                    if board[listeHV[i][j]] == ' ' :
+                        if array.count('O') == 2 :
+                            board[listeHV[i][j]] = 'O'
+                            boardNotChanged = False
+                        elif array.count('O') == 0 :
+                            X_winningCase = listeHV[i][j]
+            elif array.count('O') == 1 and array.count(' ') == 2 :
+                for c in listeHV[i]:
+                    if board[c] == ' ':
+                        pre_winningCases.append(c)
             break
     for i in range(9):
         if boardCopy[i] == ' ' and board[i] != boardCopy[i]:
@@ -68,9 +97,25 @@ def compMove():
             print("\nThe player O fill the {}th case\n".format(pos + 1))
             break
     if boardNotChanged:
-        notFullCases = [index for index in range(9) if caseIsempty(index)]
-        pos = random.choice(notFullCases)
-        board[pos] = 'O'
+        if X_winningCase != -1 :
+            board[X_winningCase] = 'O'
+            pos = X_winningCase
+        elif len(pre_winningCases)!=0 :
+            print(pre_winningCases)
+            t=[0]*9
+            for c in pre_winningCases :
+                t[c]+=1
+            best_case_choice = pre_winningCases[0]
+            for i in range(9) :
+                if t[i]!=0 and t[best_case_choice]>t[i] :
+                    best_case_choice = i
+            board[best_case_choice] = 'O'
+            pos = best_case_choice
+            print(best_case_choice)
+        else :
+            notFullCases = [index for index in range(9) if caseIsempty(index)]
+            pos = random.choice(notFullCases)
+            board[pos] = 'O'
         print("\nThe player O fill the {}th case\n".format(pos + 1))
 
 
