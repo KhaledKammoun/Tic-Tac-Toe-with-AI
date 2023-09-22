@@ -7,13 +7,19 @@ by making .
 import random
 def initializeBoard() :
     return [' ' for _ in range(9)]
+
+def emptyCase(index) :
+    if board[index] != ' ' :
+        return ' '
+    else :
+        return str(index+1)
 def printBoard() :
-    global board
-    print("    {} | {} | {}   |   1 | 2 | 3".format(board[0],board[1],board[2]))
-    print("   ---⬤---⬤---  |  ---⬤---⬤---")
-    print("    {} | {} | {}   |   4 | 5 | 6".format(board[3],board[4],board[5]))
-    print("   ---⬤---⬤---  |  ---⬤---⬤---")
-    print("    {} | {} | {}   |   7 | 8 | 9  ".format(board[6],board[7],board[8]))
+    global board,X_score,O_score
+    print("    {} | {} | {}   |   {} | {} | {}        ⬤---------------------⬤".format(board[0],board[1],board[2],emptyCase(0),emptyCase(1),emptyCase(2)))
+    print("   ---⬤---⬤---  |  ---⬤---⬤---       |     Score Board     |")
+    print("    {} | {} | {}   |   {} | {} | {}        ⬤---------------------⬤".format(board[3],board[4],board[5],emptyCase(3),emptyCase(4),emptyCase(5)))
+    print("   ---⬤---⬤---  |  ---⬤---⬤---       |   X : {}  |  O : {}   |".format(X_score,O_score))
+    print("    {} | {} | {}   |   {} | {} | {}        ⬤---------------------⬤".format(board[6],board[7],board[8],emptyCase(6),emptyCase(7),emptyCase(8)))
 def boardIsFull() :
     global board
     return board.count(' ')==0
@@ -90,7 +96,7 @@ def compMove():
                 for c in listeHV[i]:
                     if board[c] == ' ':
                         pre_winningCases.append(c)
-            break
+            
     for i in range(9):
         if boardCopy[i] == ' ' and board[i] != boardCopy[i]:
             pos = i
@@ -112,6 +118,7 @@ def compMove():
             board[best_case_choice] = 'O'
             pos = best_case_choice
             print(best_case_choice)
+            print(t)
         else :
             notFullCases = [index for index in range(9) if caseIsempty(index)]
             pos = random.choice(notFullCases)
@@ -128,8 +135,9 @@ def winner() :
         return True
     return False
 def main() :
-    global board
+    global board, X_score, O_score
     playAgain = True
+    X_score = O_score = 0
     while playAgain :
         board = initializeBoard()
         print("-----------------")
@@ -147,12 +155,14 @@ def main() :
                 if winner() :
                     printBoard()
                     print("Sorry, O/'s the winner, For the next time :(")
+                    O_score+=1
                     break
             else :
                 PlayerMove()
                 if winner() :
                     printBoard()
                     print("Congratulation!!, You win!!!!")
+                    X_score+=1
                     break
             x+=1
             print()
