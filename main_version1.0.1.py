@@ -25,11 +25,29 @@ def boardIsFull() :
     return board.count(' ')==0
 def caseIsempty(pos) :
     return board[pos] == ' '
+
+def thereIsXinRow(i) :
+    global board
+    x = i // 3
+    y = i % 3
+    lineH = [board[c] for c in [x * 3, x * 3 + 1, x * 3 + 2]]
+    lineV = [board[c] for c in [y, y + 3, y + 6]]
+    listeHV = [board[x] for c in [[0, 4, 8], [2, 4, 6]] for x in c if c == i]
+    if 'X' in lineH or 'X' in lineV or 'X' in listeHV :
+        print("YES",i+1)
+        return True
+    return False 
+    
+    
+
 def PlayerMove() : 
     global board
     test = True 
     while test :
-        pos = input("\nEnter a number (1-9) : ")
+        try :
+            pos = input("\nEnter a number (1-9) : ")
+        except EOFError :
+            exit()
         try :
             pos = int(pos)
             if 0 < pos <= 9 :
@@ -42,6 +60,7 @@ def PlayerMove() :
                 print("\nError, Give a number within the range!\n")
         except :
             print("\nError, you shoud write a number!\n")
+
 def compMove():
     global board
     boardCopy = board.copy()
@@ -49,53 +68,54 @@ def compMove():
     boardNotChanged = True
     X_winningCase = -1
     pre_winningCases = []
-    for i in range(3):
-        lineH = [i * 3, i * 3 + 1, i * 3 + 2]
-        lineV = [i, i + 3, i + 6]
-        if boardNotChanged :
-            array = [board[c] for c in lineH]
-            if array.count(' ') == 1 :
-                for j in range(3):
-                    if board[lineH[j]] == ' ' :
-                        if array.count('O') == 2 :
-                            board[lineH[j]] = 'O'
-                            boardNotChanged = False
-                        elif array.count('O') == 0 :
-                            X_winningCase = lineH[j]
-            elif array.count('O') == 1 and array.count(' ') == 2 :
-                for c in lineH:
-                    if board[c] == ' ':
-                        pre_winningCases.append(c)
-        elif boardNotChanged :
-            array = [board[c] for c in lineV]
-            if array.count(' ') == 1 :
-                for j in range(3):
-                    if board[lineV[j]] == ' ' :
-                        if array.count('O') == 2 :
-                            board[lineV[j]] = 'O'
-                            boardNotChanged = False
-                        elif array.count('O') == 0 :
-                            X_winningCase = lineV[j]
-            elif array.count('O') == 1 and array.count(' ') == 2 :
-                for c in lineV :
-                    if board[c] == ' ':
-                        pre_winningCases.append(c)
-    listeHV = [[0, 4, 8], [2, 4, 6]]
-    for i in range(2):
-        if boardNotChanged :
-            array = [board[c] for c in listeHV[i]]
-            if array.count(' ') == 1 :
-                for j in range(3):
-                    if board[listeHV[i][j]] == ' ' :
-                        if array.count('O') == 2 :
-                            board[listeHV[i][j]] = 'O'
-                            boardNotChanged = False
-                        elif array.count('O') == 0 :
-                            X_winningCase = listeHV[i][j]
-            elif array.count('O') == 1 and array.count(' ') == 2 :
-                for c in listeHV[i]:
-                    if board[c] == ' ':
-                        pre_winningCases.append(c)
+    if difficulty >= 1 :
+        for i in range(3):
+            lineH = [i * 3, i * 3 + 1, i * 3 + 2]
+            lineV = [i, i + 3, i + 6]
+            if boardNotChanged :
+                array = [board[c] for c in lineH]
+                if array.count(' ') == 1 :
+                    for j in range(3):
+                        if board[lineH[j]] == ' ' :
+                            if array.count('O') == 2 :
+                                board[lineH[j]] = 'O'
+                                boardNotChanged = False
+                            elif array.count('O') == 0 :
+                                X_winningCase = lineH[j]
+                elif array.count('O') == 1 and array.count(' ') == 2 :
+                    for c in lineH:
+                        if board[c] == ' ':
+                            pre_winningCases.append(c)
+
+                array = [board[c] for c in lineV]
+                if array.count(' ') == 1 :
+                    for j in range(3):
+                        if board[lineV[j]] == ' ' :
+                            if array.count('O') == 2 :
+                                board[lineV[j]] = 'O'
+                                boardNotChanged = False
+                            elif array.count('O') == 0 :
+                                X_winningCase = lineV[j]
+                elif array.count('O') == 1 and array.count(' ') == 2 :
+                    for c in lineV :
+                        if board[c] == ' ':
+                            pre_winningCases.append(c)
+        listeHV = [[0, 4, 8], [2, 4, 6]]
+        for i in range(2):
+            if boardNotChanged :
+                array = [board[c] for c in listeHV[i]]
+                if array.count(' ') == 1 :
+                    for j in range(3):
+                        if board[listeHV[i][j]] == ' ' :
+                            if array.count('O') == 2 :
+                                board[listeHV[i][j]] = 'O'
+                                boardNotChanged = False
+                            elif array.count('O') == 0 :
+                                X_winningCase = listeHV[i][j]
+                elif array.count('O') == 1 and array.count(' ') == 2 :
+                    for c in listeHV[i]:
+                        if board[c] == ' ':
+                            pre_winningCases.append(c)
             
     for i in range(9):
         if boardCopy[i] == ' ' and board[i] != boardCopy[i]:
@@ -106,39 +126,69 @@ def compMove():
         if X_winningCase != -1 :
             board[X_winningCase] = 'O'
             pos = X_winningCase
-        elif len(pre_winningCases)!=0 :
-            print(pre_winningCases)
+
+        # add a condition (difficulty == 2) #hard
+        
+        elif difficulty == 2 and len(pre_winningCases)!=0 :
+            
             t=[0]*9
             for c in pre_winningCases :
                 t[c]+=1
             best_case_choice = pre_winningCases[0]
             for i in range(9) :
-                if t[i]!=0 and t[best_case_choice]>t[i] :
+                if t[i]!=0 and t[best_case_choice]<t[i] :
+                    # choose the i th case if it have X in its lines .
                     best_case_choice = i
+
+                # If the two cases have the same chance, then we should choose the case that has X in a line
+                # to make it hard for the opponent to develop a new strategy by going to a clean line to start
+                # working in that line .
+                elif t[i]==t[best_case_choice] and thereIsXinRow(i):
+                    best_case_choice = i
+
             board[best_case_choice] = 'O'
             pos = best_case_choice
-            print(best_case_choice)
+            
+            print(best_case_choice+1)
             print(t)
+            print()
+            
         else :
+            # we used random just for the first movement or at a blocking movements
+            # when the board is empty .
             notFullCases = [index for index in range(9) if caseIsempty(index)]
             pos = random.choice(notFullCases)
             board[pos] = 'O'
+            print("We used a random movement .")
+        print([c+1 for c in pre_winningCases])
+        print(X_winningCase)
         print("\nThe player O fill the {}th case\n".format(pos + 1))
 
 
-def winner() :
+def winner(player = 'N') :
     for i in range(3) :
         if (board[i*3] == board[i*3+1] == board[i*3+2] != ' ' or board[i] == board[i+3] == board[i+6] != ' ') :
-            return True
+            if player!='N' :
+                if board[i*3]==player :
+                    return True
+                else :
+                    return False
+            return True 
         
     if board[0] == board[4] == board[8] != ' ' or board[2] == board[4] == board[6] != ' ':
+        if player!='N' :
+            if board[4]==player :
+                return True
+            else :
+                return False
         return True
     return False
 def main() :
-    global board, X_score, O_score
+    global board, X_score, O_score,difficulty
     playAgain = True
     X_score = O_score = 0
     while playAgain :
+        difficulty = int(input("Please Enter The Difficulty (0-1-2): "))
         board = initializeBoard()
         print("-----------------")
         print("|  Tic Tac Toe  |")
@@ -153,21 +203,24 @@ def main() :
             if x%2 == 0 : # O is playing
                 compMove()
                 if winner() :
-                    printBoard()
-                    print("Sorry, O/'s the winner, For the next time :(")
                     O_score+=1
+                    printBoard()
+                    print("Sorry, O\'s the winner, For the next time :(")
                     break
             else :
                 PlayerMove()
                 if winner() :
+                    X_score+=1
                     printBoard()
                     print("Congratulation!!, You win!!!!")
-                    X_score+=1
                     break
             x+=1
             print()
             printBoard()
-        playAgain = input("\nYou wanna play again!(Y/N) : ").strip().lower() == "y"
+        try :
+            playAgain = input("\nYou wanna play again!(Y/N) : ").strip().lower() == "y"
+        except EOFError :
+            exit()
 
 
 main()
