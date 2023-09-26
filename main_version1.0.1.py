@@ -1,10 +1,11 @@
+
 """
 In this version 1.0.1, we work on how to improve our computer player's movement, by making him
 attack and deffence at the same time, for example if the player make two in row our computer player
 need to defence by make an O on the third case, and from this movement our player can now make some defences
 by making .
 """
-import random
+import random,os
 def initializeBoard() :
     return [' ' for _ in range(9)]
 
@@ -14,15 +15,23 @@ def emptyCase(index) :
     else :
         return str(index+1)
 def printBoard() :
-    global board,X_score,O_score
-    print("    {} | {} | {}   |   {} | {} | {}        ⬤---------------------⬤".format(board[0],board[1],board[2],emptyCase(0),emptyCase(1),emptyCase(2)))
-    print("   ---⬤---⬤---  |  ---⬤---⬤---       |     Score Board     |")
-    print("    {} | {} | {}   |   {} | {} | {}        ⬤---------------------⬤".format(board[3],board[4],board[5],emptyCase(3),emptyCase(4),emptyCase(5)))
-    print("   ---⬤---⬤---  |  ---⬤---⬤---       |   X : {}  |  O : {}   |".format(X_score,O_score))
-    print("    {} | {} | {}   |   {} | {} | {}        ⬤---------------------⬤".format(board[6],board[7],board[8],emptyCase(6),emptyCase(7),emptyCase(8)))
+    global board,X_score,O_score,difficulty
+    message = ["**********" if difficulty == -1 else "easy", "medium", "hard"]
+    width = len("     Game Difficulty     ")
+    padding = [(width - len(message[0])) // 2,(width - len(message[1])) // 2, (width - len(message[2])) // 2]
+    difficulty_message = []
+    for i in range (3) :
+        difficulty_message.append(f"|{' ' * padding[i]}{message[i]}{' ' * padding[i]}|")
+    print("    {} | {} | {}   |   {} | {} | {}        ⬤---------------------⬤      ⬤------------------------⬤".format(board[0],board[1],board[2],emptyCase(0),emptyCase(1),emptyCase(2)))
+    print("   ---⬤---⬤---  |  ---⬤---⬤---       |     Score Board     |      |     Game Difficulty    |")
+    print("    {} | {} | {}   |   {} | {} | {}        ⬤---------------------⬤      ⬤------------------------⬤".format(board[3],board[4],board[5],emptyCase(3),emptyCase(4),emptyCase(5)))
+    print("   ---⬤---⬤---  |  ---⬤---⬤---       |   X : {}  |  O : {}   |      {}".format(X_score,O_score, difficulty_message[0] if difficulty==-1 else difficulty_message[difficulty]))
+    print("    {} | {} | {}   |   {} | {} | {}        ⬤---------------------⬤      ⬤------------------------⬤".format(board[6],board[7],board[8],emptyCase(6),emptyCase(7),emptyCase(8)))
+
 def boardIsFull() :
     global board
     return board.count(' ')==0
+
 def caseIsempty(pos) :
     return board[pos] == ' '
 
@@ -34,7 +43,6 @@ def thereIsXinRow(i) :
     lineV = [board[c] for c in [y, y + 3, y + 6]]
     listeHV = [board[x] for c in [[0, 4, 8], [2, 4, 6]] for x in c if c == i]
     if 'X' in lineH or 'X' in lineV or 'X' in listeHV :
-        print("YES",i+1)
         return True
     return False 
     
@@ -143,15 +151,11 @@ def compMove():
                 # If the two cases have the same chance, then we should choose the case that has X in a line
                 # to make it hard for the opponent to develop a new strategy by going to a clean line to start
                 # working in that line .
-                elif t[i]==t[best_case_choice] and thereIsXinRow(i):
+                elif (t[i]==t[best_case_choice] and thereIsXinRow(i)) or t[i]==4:
                     best_case_choice = i
-
+            
             board[best_case_choice] = 'O'
             pos = best_case_choice
-            
-            print(best_case_choice+1)
-            print(t)
-            print()
             
         else :
             # we used random just for the first movement or at a blocking movements
@@ -159,9 +163,7 @@ def compMove():
             notFullCases = [index for index in range(9) if caseIsempty(index)]
             pos = random.choice(notFullCases)
             board[pos] = 'O'
-            print("We used a random movement .")
-        print([c+1 for c in pre_winningCases])
-        print(X_winningCase)
+
         print("\nThe player O fill the {}th case\n".format(pos + 1))
 
 
@@ -188,15 +190,26 @@ def main() :
     playAgain = True
     X_score = O_score = 0
     while playAgain :
-        difficulty = int(input("Please Enter The Difficulty (0-1-2): "))
+        os.system('cls') # clear the terminal 
+        
         board = initializeBoard()
+        difficulty = -1
         print("-----------------")
         print("|  Tic Tac Toe  |")
         print("-----------------")
         printBoard()
-        print("--------------------")
-        print("|***Let We Start***|")
-        print("--------------------")
+        print("--------------------{}".format("-----" if X_score != O_score else ""))
+        print("|***Let We {}***|".format("Play Again" if X_score != O_score else "Start"))
+        print("--------------------{}".format("-----" if X_score != O_score else ""))
+        try :
+            while True :
+                try :
+                    difficulty = int(input("Please choose the game difficulty (0 :: easy, 1 :: medium, 2 :: hard): "))
+                    break
+                except ValueError:
+                    print("\nError, you shoud write a number!\n")
+        except EOFError :
+            exit()
         x = 0
     
         while not(boardIsFull()) :
