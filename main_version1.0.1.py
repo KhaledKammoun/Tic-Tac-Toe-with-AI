@@ -46,7 +46,14 @@ def thereIsXinRow(i) :
         return True
     return False 
     
-    
+def secondMove() :
+    global board
+    empty_cases = [i for i in range(9) if board[i]==' ']
+    if (([0,6,2,8] or empty_cases) and (board[0]=='X' or board[2]=='X' or board[6]=='X' or board[8]=='X')) :
+        board[4] = 'O'
+        return 4
+    else :
+        return -1
 
 def PlayerMove() : 
     global board
@@ -138,24 +145,28 @@ def compMove():
         # add a condition (difficulty == 2) #hard
         
         elif difficulty == 2 and len(pre_winningCases)!=0 :
+            # second move
+            pos = secondMove()
+            if (pos == -1) :
+                
             
-            t=[0]*9
-            for c in pre_winningCases :
-                t[c]+=1
-            best_case_choice = pre_winningCases[0]
-            for i in range(9) :
-                if t[i]!=0 and t[best_case_choice]<t[i] :
-                    # choose the i th case if it have X in its lines .
-                    best_case_choice = i
+                t=[0]*9
+                for c in pre_winningCases :
+                    t[c]+=1
+                best_case_choice = pre_winningCases[0]
+                for i in range(9) :
+                    if t[i]!=0 and t[best_case_choice]<t[i] :
+                        # choose the i th case if it have X in its lines .
+                        best_case_choice = i
 
-                # If the two cases have the same chance, then we should choose the case that has X in a line
-                # to make it hard for the opponent to develop a new strategy by going to a clean line to start
-                # working in that line .
-                elif (t[i]==t[best_case_choice] and thereIsXinRow(i)) or t[i]==4:
-                    best_case_choice = i
-            
-            board[best_case_choice] = 'O'
-            pos = best_case_choice
+                    # If the two cases have the same chance, then we should choose the case that has X in a line
+                    # to make it hard for the opponent to develop a new strategy by going to a clean line to start
+                    # working in that line .
+                    elif (t[i]==t[best_case_choice] and thereIsXinRow(i)) or t[i]==4:
+                        best_case_choice = i
+                
+                board[best_case_choice] = 'O'
+                pos = best_case_choice
             
         else :
             # we used random just for the first movement or at a blocking movements
@@ -201,6 +212,7 @@ def main() :
         print("--------------------{}".format("-----" if X_score != O_score else ""))
         print("|***Let We {}***|".format("Play Again" if X_score != O_score else "Start"))
         print("--------------------{}".format("-----" if X_score != O_score else ""))
+        PlayerStart = 0
         try :
             while True :
                 try :
@@ -208,9 +220,19 @@ def main() :
                     break
                 except ValueError:
                     print("\nError, you shoud write a number!\n")
+            try : 
+                x = random.randint(1,6)
+                print("random number : ", x)
+                if x == int(input("Please, give a number within (1,6) : ")) :
+                    print("Yes, u'll start first")
+                    
+                else :
+                    print("Ohh, the computer will start first")
+                    PlayerStart = 1
+            except ValueError :
+                print("\nError, you shoud write a number!\n")
         except EOFError :
             exit()
-        x = 0
     
         while not(boardIsFull()) :
             if x%2 == 0 : # O is playing
