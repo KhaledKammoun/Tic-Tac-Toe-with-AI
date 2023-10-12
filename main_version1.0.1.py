@@ -221,9 +221,9 @@ def main() :
                 except ValueError:
                     print("\nError, you shoud write a number!\n")
             try : 
-                x = random.randint(1,6)
-                print("random number : ", x)
-                if x == int(input("Please, give a number within (1,6) : ")) :
+                randomX = random.randint(1,6)
+                print("random number : ", randomX)
+                if randomX == int(input("Please, give a number within (1,6) : ")) :
                     print("Yes, u'll start first")
                     
                 else :
@@ -233,7 +233,8 @@ def main() :
                 print("\nError, you shoud write a number!\n")
         except EOFError :
             exit()
-    
+
+        x = 0 if (PlayerStart == 1) else 1
         while not(boardIsFull()) :
             if x%2 == 0 : # O is playing
                 compMove()
