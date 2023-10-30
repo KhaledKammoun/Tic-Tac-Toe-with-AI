@@ -5,7 +5,7 @@ attack and deffence at the same time, for example if the player make two in row 
 need to defence by make an O on the third case, and from this movement our player can now make some defences
 by making .
 """
-import random,os
+import random, os, time, sys
 def initializeBoard() :
     return [' ' for _ in range(9)]
 
@@ -14,6 +14,15 @@ def emptyCase(index) :
         return ' '
     else :
         return str(index+1)
+def loading(seconds) :
+    start_time = time.time()
+    while time.time() - start_time < seconds:
+        for i in range(4):
+            sys.stdout.write("Loading" + "." * i + "\r")
+            sys.stdout.flush()
+            time.sleep(0.5)
+        sys.stdout.write(" " * 11 + "\r")  # Clear the loading animation
+        sys.stdout.flush()
 def printBoard() :
     global board,X_score,O_score,difficulty
     message = ["**********" if difficulty == -1 else "easy", "medium", "hard"]
@@ -27,7 +36,7 @@ def printBoard() :
     print("    {} | {} | {}   |   {} | {} | {}        ⬤---------------------⬤      ⬤------------------------⬤".format(board[3],board[4],board[5],emptyCase(3),emptyCase(4),emptyCase(5)))
     print("   ---⬤---⬤---  |  ---⬤---⬤---       |   X : {}  |  O : {}   |      {}".format(X_score,O_score, difficulty_message[0] if difficulty==-1 else difficulty_message[difficulty]))
     print("    {} | {} | {}   |   {} | {} | {}        ⬤---------------------⬤      ⬤------------------------⬤".format(board[6],board[7],board[8],emptyCase(6),emptyCase(7),emptyCase(8)))
-
+    loading(5)
 def boardIsFull() :
     global board
     return board.count(' ')==0
@@ -220,9 +229,10 @@ def main() :
                     break
                 except ValueError:
                     print("\nError, you shoud write a number!\n")
-            try : 
+            try :
+                
                 randomX = random.randint(1,6)
-                print("random number : ", randomX)
+                
                 if randomX == int(input("Please, give a number within (1,6) : ")) :
                     print("Yes, u'll start first")
                     

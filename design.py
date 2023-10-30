@@ -32,7 +32,7 @@ def animatedFillingBoard(listOfSpaces) :
 # to all the board cases, not just for a case in a ligne .
 fillSpaces("|||  | ||| |||  Tic Tac Toe  || || || |  ||")
 
-"""
+
 print("\033c", end='')
 print("        |||||||||||||||||||||||||||||||||||||||||||")
 print("        |||  | ||| |||  Tic Tac Toe  || || || |  ||")
@@ -137,4 +137,3 @@ print("        ||                                       ||")
 print("        |||||||  |||  ||| ||||  |  |||  |||  ||||||")
 print("        |||  ||||||| |||  || |||||  ||| ||||   ||||")
 print("        |||||||||||||||||||||||||||||||||||||||||||")
-"""
