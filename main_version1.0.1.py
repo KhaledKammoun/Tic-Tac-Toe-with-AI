@@ -14,17 +14,21 @@ def emptyCase(index) :
         return ' '
     else :
         return str(index+1)
-def loading(seconds) :
+    
+
+def loading(sentence ,seconds) :
     start_time = time.time()
     while time.time() - start_time < seconds:
         for i in range(4):
-            sys.stdout.write("Loading" + "." * i + "\r")
+            sys.stdout.write(sentence + "." * i + "\r")
             sys.stdout.flush()
-            time.sleep(0.5)
-        sys.stdout.write(" " * 11 + "\r")  # Clear the loading animation
+            time.sleep(0.4)
+        sys.stdout.write(" " * (11 if seconds == 5 else 21) + "\r")  # Clear the loading animation
         sys.stdout.flush()
+
+
 def printBoard() :
-    global board,X_score,O_score,difficulty
+    global board,X_score,O_score,difficulty,gameStarted
     message = ["**********" if difficulty == -1 else "easy", "medium", "hard"]
     width = len("     Game Difficulty     ")
     padding = [(width - len(message[0])) // 2,(width - len(message[1])) // 2, (width - len(message[2])) // 2]
@@ -36,7 +40,11 @@ def printBoard() :
     print("    {} | {} | {}   |   {} | {} | {}        ⬤---------------------⬤      ⬤------------------------⬤".format(board[3],board[4],board[5],emptyCase(3),emptyCase(4),emptyCase(5)))
     print("   ---⬤---⬤---  |  ---⬤---⬤---       |   X : {}  |  O : {}   |      {}".format(X_score,O_score, difficulty_message[0] if difficulty==-1 else difficulty_message[difficulty]))
     print("    {} | {} | {}   |   {} | {} | {}        ⬤---------------------⬤      ⬤------------------------⬤".format(board[6],board[7],board[8],emptyCase(6),emptyCase(7),emptyCase(8)))
-    loading(5)
+    
+    if (not gameStarted) :
+        loading("Loading ", 5)
+    else :
+        loading("Computer thinking ",2)
 def boardIsFull() :
     global board
     return board.count(' ')==0
@@ -206,8 +214,9 @@ def winner(player = 'N') :
         return True
     return False
 def main() :
-    global board, X_score, O_score,difficulty
+    global board, X_score, O_score,difficulty, gameStarted
     playAgain = True
+    gameStarted = False
     X_score = O_score = 0
     while playAgain :
         os.system('cls') # clear the terminal 
@@ -222,6 +231,7 @@ def main() :
         print("|***Let We {}***|".format("Play Again" if X_score != O_score else "Start"))
         print("--------------------{}".format("-----" if X_score != O_score else ""))
         PlayerStart = 0
+        
         try :
             while True :
                 try :
@@ -243,7 +253,7 @@ def main() :
                 print("\nError, you shoud write a number!\n")
         except EOFError :
             exit()
-
+        gameStarted = True
         x = 0 if (PlayerStart == 1) else 1
         while not(boardIsFull()) :
             if x%2 == 0 : # O is playing
