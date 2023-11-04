@@ -14,18 +14,6 @@ def emptyCase(index) :
         return ' '
     else :
         return str(index+1)
-    
-
-def loading(sentence ,seconds) :
-    start_time = time.time()
-    while time.time() - start_time < seconds:
-        for i in range(4):
-            sys.stdout.write(sentence + "." * i + "\r")
-            sys.stdout.flush()
-            time.sleep(0.4)
-        sys.stdout.write(" " * (11 if seconds == 5 else 21) + "\r")  # Clear the loading animation
-        sys.stdout.flush()
-
 
 def printBoard() :
     global board,X_score,O_score,difficulty,gameStarted
@@ -41,16 +29,22 @@ def printBoard() :
     print("   ---⬤---⬤---  |  ---⬤---⬤---       |   X : {}  |  O : {}   |      {}".format(X_score,O_score, difficulty_message[0] if difficulty==-1 else difficulty_message[difficulty]))
     print("    {} | {} | {}   |   {} | {} | {}        ⬤---------------------⬤      ⬤------------------------⬤".format(board[6],board[7],board[8],emptyCase(6),emptyCase(7),emptyCase(8)))
     
-    if (not gameStarted) :
-        loading("Loading ", 5)
-    else :
-        loading("Computer thinking ",2)
 def boardIsFull() :
     global board
     return board.count(' ')==0
 
 def caseIsempty(pos) :
     return board[pos] == ' '
+
+def loading(sentence ,seconds) :
+    start_time = time.time()
+    while time.time() - start_time < seconds:
+        for i in range(4):
+            sys.stdout.write(sentence + "." * i + "\r")
+            sys.stdout.flush()
+            time.sleep(0.4)
+        sys.stdout.write(" " * (11 if seconds == 5 else 21) + "\r")  # Clear the loading animation
+        sys.stdout.flush()
 
 def thereIsXinRow(i) :
     global board
@@ -192,6 +186,8 @@ def compMove():
             pos = random.choice(notFullCases)
             board[pos] = 'O'
 
+        loading("Computer Thinking", 1)
+
         print("\nThe player O fill the {}th case\n".format(pos + 1))
 
 
@@ -240,15 +236,18 @@ def main() :
                 except ValueError:
                     print("\nError, you shoud write a number!\n")
             try :
-                
-                randomX = random.randint(1,6)
-                
-                if randomX == int(input("Please, give a number within (1,6) : ")) :
+                while True :
+                    whoWillStartFirst = int(input("Press 0 -> X | 1 -> O : "))
+                    if whoWillStartFirst in [0,1] :
+                        break
+
+                if whoWillStartFirst == 0 :
                     print("Yes, u'll start first")
                     
                 else :
                     print("Ohh, the computer will start first")
                     PlayerStart = 1
+
             except ValueError :
                 print("\nError, you shoud write a number!\n")
         except EOFError :
