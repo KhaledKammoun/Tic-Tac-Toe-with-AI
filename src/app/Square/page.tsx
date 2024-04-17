@@ -1,13 +1,17 @@
 'use client'
+import { getServerSideProps } from "next/dist/build/templates/pages";
 import { useState } from "react";
 
 interface SquareProps {
-    opponent: boolean,
-    onGame: boolean
-}
+    opponent: boolean ;
+    onGame: boolean ;
+} ;
+type Props = Awaited<ReturnType<typeof getServerSideProps>>['props']
 
-export default function Square({opponent, onGame} : SquareProps) {
-  const [board, setBoard] = useState<string[]>([...Array(9).fill('')]) ;
+// export default function Square({opponent, onGame} : SquareProps) {
+
+const Square: React.FC<Props> = ({opponent, onGame}) => {
+  const [board, setBoard] = useState<string[]>(Array(9).fill('')) ;
   const [count, setCount] = useState(1) ;
   const [boardHistory, setBoardHistory] = useState<number[]>([]) ;
   const winner = calculateWinner(board);
@@ -84,3 +88,5 @@ export default function Square({opponent, onGame} : SquareProps) {
     </main>
   );
 }
+
+export default Square ;
