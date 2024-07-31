@@ -34,7 +34,7 @@ body {
 
  */
 
- * {
+* {
   box-sizing: border-box;
 }
 
@@ -117,7 +117,7 @@ body {
 
 .board-row:after {
   clear: both;
-  content: '';
+  content: "";
   display: table;
 }
 
@@ -131,4 +131,9 @@ body {
 
 .game-info {
   margin-left: 20px;
+}
+
+.custom-button > div {
+  @apply border rounded-md p-1 px-2 border-gray-500 cursor-pointer hover:bg-gray-100 transition-all duration-200;
+  @apply mr-2;
 }
